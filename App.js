@@ -12,13 +12,15 @@ import Notita from './componentes/Notita';
 
 export default class App extends React.Component {
 
+  // Estado de la App
   state = {
-    all_notitas: [ {'date': 'Hoy', 'notita': 'testNotita1'} ],
-    notita_text: 'notitaTextTest1'
+    all_notitas: [],
+    notita_text: ''
   }
 
   render() {
 
+    // Recorro el array de notitas y retorno una Notita
     let show_notitas = this.state.all_notitas.map((val, key) => {
       return (
         <Notita
@@ -26,7 +28,6 @@ export default class App extends React.Component {
           keyval={key}
           val={val}
           eventDeleteNotita={()=>this.deleteNotita(key)}>
-
         </Notita>
       );
     });
@@ -43,7 +44,9 @@ export default class App extends React.Component {
         </ScrollView>
 
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.addButton}>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={this.addNotita.bind(this)}>
             <Text style={styles.addButtonText}>+</Text>
           </TouchableOpacity>
 
@@ -51,7 +54,9 @@ export default class App extends React.Component {
             style={styles.textInput}
             placeholder='>>> Escribir notita'
             placeholderTextColor='white'
-            underlineColorAndroid='transparent'>
+            underlineColorAndroid='transparent'
+            onChangeText={(notita_text) => (this.setState({notita_text}))}
+            value={this.state.notita_text}>
 
           </TextInput>
         </View>
@@ -59,6 +64,28 @@ export default class App extends React.Component {
       </View>
     );
   }
+
+  addNotita() {
+    /*
+    Agregar una notita.
+    Se hizo esta funcion para pasarle
+    datos al estado y luego renderizar notitas.
+    */
+    if (this.state.notita_text) {
+      var d = new Date();
+      this.state.all_notitas.push(
+        {
+          'notita': this.state.notita_text,
+          'date': d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear(),
+        }
+      ); // Agrego datos al array de notitas
+      
+      // Agrego notitas al estado que las contiene
+      this.setState({all_notitas: this.state.all_notitas})
+      this.setState({notita_text: ''})  // Limpiar input
+    }
+  }
+
 }
 
 const styles = StyleSheet.create({
