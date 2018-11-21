@@ -14,7 +14,7 @@ export default class App extends React.Component {
       <View style={styles.container}>
 
         <View style={styles.header}>
-          <Text style={styles.headerText}>- NOTITAS -</Text>
+          <Text style={styles.headerText}>NOTITAS</Text>
         </View>
 
         <ScrollView style={styles.scrollContainer}></ScrollView>
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 26,
     padding: 26,
   },
   scrollContainer: {
@@ -82,13 +82,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   textInput: {
+    fontSize: 14,
     alignSelf: 'stretch',
     color: '#fff',
     padding: 20,
     paddingTop: 46,
-    backgroundColor: '#d86e2d',
+    backgroundColor: '#ff9035',
     borderTopWidth: 2,
     borderTopColor: '#ededed',
-
-  },
+  }
 });
