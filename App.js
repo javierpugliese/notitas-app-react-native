@@ -68,7 +68,7 @@ export default class App extends React.Component {
   addNotita() {
     /*
     Agregar una notita.
-    Se hizo esta funcion para pasarle
+    Se hizo esta función para pasarle
     datos al estado y luego renderizar notitas.
     */
     if (this.state.notita_text) {
@@ -81,10 +81,26 @@ export default class App extends React.Component {
       ); // Agrego datos al array de notitas
       
       // Agrego notitas al estado que las contiene
-      this.setState({all_notitas: this.state.all_notitas})
-      this.setState({notita_text: ''})  // Limpiar input
+      this.setState(
+        {
+          all_notitas: this.state.all_notitas,
+          notita_text: '',  // Limpiar input
+        }
+      )
     }
-  }
+  }  // addNotita
+
+  deleteNotita(key) {
+    /*
+    Borrar una notita. Requiere key/id de la notita.
+    Se hizo esta función para borrar
+    una notita del array de notitas en el estado.
+    Se le pasa una key o id y la cantidad de elementos,
+    en este caso, uno. Luego se refresca el estado.
+    */
+    this.state.all_notitas.splice(key, 1)
+    this.setState({all_notitas: this.state.all_notitas})  // Refrescar estado
+  } // deleteNotita
 
 }
 
