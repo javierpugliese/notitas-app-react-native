@@ -11,7 +11,27 @@ import {
 import Notita from './componentes/Notita';
 
 export default class App extends React.Component {
+
+  // Estado de la App
+  state = {
+    all_notitas: [],
+    notita_text: ''
+  }
+
   render() {
+
+    // Recorro el array de notitas y retorno una Notita
+    let show_notitas = this.state.all_notitas.map((val, key) => {
+      return (
+        <Notita
+          key={key}
+          keyval={key}
+          val={val}
+          eventDeleteNotita={()=>this.deleteNotita(key)}>
+        </Notita>
+      );
+    });
+
     return (
       <View style={styles.container}>
 
@@ -19,10 +39,14 @@ export default class App extends React.Component {
           <Text style={styles.headerText}>NOTITAS</Text>
         </View>
 
-        <ScrollView style={styles.scrollContainer}></ScrollView>
+        <ScrollView style={styles.scrollContainer}>
+          {show_notitas}
+        </ScrollView>
 
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.addButton}>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={this.addNotita.bind(this)}>
             <Text style={styles.addButtonText}>+</Text>
           </TouchableOpacity>
 
@@ -30,7 +54,9 @@ export default class App extends React.Component {
             style={styles.textInput}
             placeholder='>>> Escribir notita'
             placeholderTextColor='white'
-            underlineColorAndroid='transparent'>
+            underlineColorAndroid='transparent'
+            onChangeText={(notita_text) => (this.setState({notita_text}))}
+            value={this.state.notita_text}>
 
           </TextInput>
         </View>
@@ -38,6 +64,44 @@ export default class App extends React.Component {
       </View>
     );
   }
+
+  addNotita() {
+    /*
+    Agregar una notita.
+    Se hizo esta función para pasarle
+    datos al estado y luego renderizar notitas.
+    */
+    if (this.state.notita_text) {
+      var d = new Date();
+      this.state.all_notitas.push(
+        {
+          'notita': this.state.notita_text,
+          'date': d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear(),
+        }
+      ); // Agrego datos al array de notitas
+      
+      // Agrego notitas al estado que las contiene
+      this.setState(
+        {
+          all_notitas: this.state.all_notitas,
+          notita_text: '',  // Limpiar input
+        }
+      )
+    }
+  }  // addNotita
+
+  deleteNotita(key) {
+    /*
+    Borrar una notita. Requiere key/id de la notita.
+    Se hizo esta función para borrar
+    una notita del array de notitas en el estado.
+    Se le pasa una key o id y la cantidad de elementos,
+    en este caso, uno. Luego se refresca el estado.
+    */
+    this.state.all_notitas.splice(key, 1)
+    this.setState({all_notitas: this.state.all_notitas})  // Refrescar estado
+  } // deleteNotita
+
 }
 
 const styles = StyleSheet.create({
