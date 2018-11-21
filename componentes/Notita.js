@@ -9,7 +9,7 @@ import {
 export default class App extends React.Component {
   render() {
     return (
-      <View style={styles.notes}>
+      <View key={this.props.keyval} style={styles.notita}>
         
         <Text style={styles.notitaText}>{this.props.val.date}</Text>
         <Text style={styles.notitaText}>{this.props.val.notita}</Text>
@@ -32,6 +32,10 @@ const styles = StyleSheet.create({
     paddingRight: 100,
     borderBottomWidth: 2,
     borderBottomColor: '#ededed',
+    borderLeftWidth: 4,
+    borderLeftColor: '#ededed',
+    borderRightWidth: 4,
+    borderRightColor: '#ededed',
   },
   notitaText: {
     paddingLeft: 20,
@@ -42,14 +46,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'blue',
+    backgroundColor: '#ed5050',
     padding: 10,
-    top: 10,
-    bottom: 10,
+    top: 20,
+    bottom: 20,
     right: 10
   },
   deleteNotitaText: {
     color: 'white',
-    fontSize: 26,
+    fontSize: 32,
   }
 });
