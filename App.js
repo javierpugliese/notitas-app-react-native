@@ -8,6 +8,8 @@ import {
   TouchableOpacity
 } from 'react-native';
 
+import Notita from './componentes/Notita';
+
 export default class App extends React.Component {
   render() {
     return (
