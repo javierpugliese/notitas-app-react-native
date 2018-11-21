@@ -10,8 +10,37 @@ import {
 
 import Notita from './componentes/Notita';
 
+import firebase from 'firebase';
+
 export default class App extends React.Component {
 
+  componentWillMount() {
+    /*
+    Conectar con Firebase.
+    Se utiliza para poder traer y mandar
+    datos a la base de datos.    
+    */
+    var config = {
+      apiKey: "AIzaSyC8L7gGSj7l76LPJCaFjF6RNAhHAqI0W80",
+      authDomain: "notitas-app-react-native.firebaseapp.com",
+      databaseURL: "https://notitas-app-react-native.firebaseio.com",
+      projectId: "notitas-app-react-native",
+      storageBucket: "notitas-app-react-native.appspot.com",
+      messagingSenderId: "485786666385"
+    };
+    firebase.initializeApp(config);
+    
+    firebase.database().ref('notitas/001').set(
+      {
+        name: 'Lorem Ipsum',
+        age: 21,
+      }
+    ).then(() => {
+        console.log('INSERTADO');
+      }).catch((error) => {
+        console.log(error);
+      });
+  }
   // Estado de la App
   state = {
     all_notitas: [],
