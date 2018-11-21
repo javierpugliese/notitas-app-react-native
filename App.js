@@ -11,7 +11,26 @@ import {
 import Notita from './componentes/Notita';
 
 export default class App extends React.Component {
+
+  state = {
+    all_notitas: [ {'date': 'Hoy', 'notita': 'testNotita1'} ],
+    notita_text: 'notitaTextTest1'
+  }
+
   render() {
+
+    let show_notitas = this.state.all_notitas.map((val, key) => {
+      return (
+        <Notita
+          key={key}
+          keyval={key}
+          val={val}
+          eventDeleteNotita={()=>this.deleteNotita(key)}>
+
+        </Notita>
+      );
+    });
+
     return (
       <View style={styles.container}>
 
@@ -19,7 +38,9 @@ export default class App extends React.Component {
           <Text style={styles.headerText}>NOTITAS</Text>
         </View>
 
-        <ScrollView style={styles.scrollContainer}></ScrollView>
+        <ScrollView style={styles.scrollContainer}>
+          {show_notitas}
+        </ScrollView>
 
         <View style={styles.footer}>
           <TouchableOpacity style={styles.addButton}>
