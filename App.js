@@ -77,20 +77,20 @@ export default class App extends React.Component {
 
     if (this.state.notita_text) {
       var d = new Date();
-      let nuevo = this.state.notita_text
-      nuevo = {notita:nuevo, date:d};
 
-      this.state.all_notitas.push(
-        {
-          'notita': this.state.notita_text,
-          'date': d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear(),
-        }
-      ); // Agrego datos al array de notitas
+      // Datos para pushear a Firebase y al estado
+      dataForPush = {
+        date: d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear(),
+        notita: this.state.notita_text
+      };
+
+      // Agrego datos al array de notitas
+      this.state.all_notitas.push(dataForPush);
       
       // Subo notitas a Firebase
-      firebase.database().ref('notitas').push(nuevo);
+      firebase.database().ref('notitas').push(dataForPush);
 
-      // Agrego notitas al estado que las contiene
+      // Refresco el estado
       this.setState(
         {
           all_notitas: this.state.all_notitas,
