@@ -13,12 +13,36 @@ import Notita from './componentes/Notita';
 import firebase from 'firebase';
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      all_notitas: [],
+      notita_text: ''
+    };
+  };
 
-  // Estado de la App
-  state = {
-    all_notitas: [],
-    notita_text: ''
-  }
+  componentWillMount() {
+    const notitasRef = firebase.database().ref('notitas');
+    this.listenForNotitas(notitasRef);
+  };
+
+  listenForNotitas = (notitasRef) => {
+    notitasRef.on('value', (dataSnapshot) => {
+
+      // Almaceno childs en un array y pusheo los mismos al estado
+      var aux = [];
+      dataSnapshot.forEach((child) => {
+        aux.push({
+          date: child.val().date,
+          notita: child.val().notita,
+          id: child.key
+        });
+      });
+      
+      // Refrescar estado
+      this.setState({all_notitas: aux});
+    });
+  };  // listenForNotitas
 
   render() {
 
@@ -29,7 +53,7 @@ export default class App extends React.Component {
           key={key}
           keyval={key}
           val={val}
-          eventDeleteNotita={()=>this.deleteNotita(key)}>
+          eventDeleteNotita={()=>this.deleteNotita(val.id)}>
         </Notita>
       );
     });
@@ -71,18 +95,26 @@ export default class App extends React.Component {
     /*
     Agregar una notita.
     Se hizo esta función para pasarle
-    datos al estado y luego renderizar notitas.
+    datos al estado y luego re-renderizar notitas,
+    luego se escribe en Firebase la notita agregada.
     */
+
     if (this.state.notita_text) {
       var d = new Date();
-      this.state.all_notitas.push(
-        {
-          'notita': this.state.notita_text,
-          'date': d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear(),
-        }
-      ); // Agrego datos al array de notitas
+
+      // Datos para pushear a Firebase y al estado
+      dataForPush = {
+        'date': d.getDate() + '-' +  d.getMonth() + '-' + d.getFullYear(),
+        'notita': this.state.notita_text
+      };
       
-      // Agrego notitas al estado que las contiene
+      // Subo notitas a Firebase
+      firebase.database().ref('notitas').push(dataForPush);
+
+      // Agrego datos al array de notitas
+      this.state.all_notitas.push(dataForPush);
+
+      // Refresco el estado
       this.setState(
         {
           all_notitas: this.state.all_notitas,
@@ -100,8 +132,11 @@ export default class App extends React.Component {
     Se le pasa una key o id y la cantidad de elementos,
     en este caso, uno. Luego se refresca el estado.
     */
-    this.state.all_notitas.splice(key, 1)
-    this.setState({all_notitas: this.state.all_notitas})  // Refrescar estado
+   
+    firebase.database().ref('notitas').child('' + key).remove()
+
+    this.state.all_notitas.splice(key, 1);
+    this.setState({all_notitas: this.state.all_notitas});  // Refrescar estado
   } // deleteNotita
 
 }
@@ -160,3 +195,13 @@ const styles = StyleSheet.create({
     borderTopColor: '#ededed',
   }
 });
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC8L7gGSj7l76LPJCaFjF6RNAhHAqI0W80",
+  authDomain: "notitas-app-react-native.firebaseapp.com",
+  databaseURL: "https://notitas-app-react-native.firebaseio.com",
+  projectId: "notitas-app-react-native",
+  storageBucket: "notitas-app-react-native.appspot.com",
+  messagingSenderId: "485786666385"
+};
+firebase.initializeApp(firebaseConfig);
