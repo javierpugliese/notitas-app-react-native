@@ -21,6 +21,28 @@ export default class App extends React.Component {
     };
   };
 
+  componentWillMount() {
+    const notitasRef = firebase.database().ref('notitas');
+    this.listenForNotitas(notitasRef);
+  };
+
+  listenForNotitas = (notitasRef) => {
+    notitasRef.on('value', (dataSnapshot) => {
+
+      // Almaceno childs en un array y pusheo los mismos al estado
+      var aux = [];
+      dataSnapshot.forEach((child) => {
+        aux.push({
+          date: child.val().date,
+          notita: child.val().notita
+        });
+      });
+      
+      // Refrescar estado
+      this.setState({all_notitas: aux});
+    });
+  }
+
   render() {
 
     // Recorro el array de notitas y retorno una Notita
@@ -72,7 +94,8 @@ export default class App extends React.Component {
     /*
     Agregar una notita.
     Se hizo esta función para pasarle
-    datos al estado y luego renderizar notitas.
+    datos al estado y luego re-renderizar notitas,
+    luego se escribe en Firebase la notita agregada.
     */
 
     if (this.state.notita_text) {
@@ -80,15 +103,15 @@ export default class App extends React.Component {
 
       // Datos para pushear a Firebase y al estado
       dataForPush = {
-        date: d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear(),
-        notita: this.state.notita_text
+        'date': d.getDate() + '-' +  d.getMonth() + '-' + d.getFullYear(),
+        'notita': this.state.notita_text
       };
-
-      // Agrego datos al array de notitas
-      this.state.all_notitas.push(dataForPush);
       
       // Subo notitas a Firebase
       firebase.database().ref('notitas').push(dataForPush);
+
+      // Agrego datos al array de notitas
+      this.state.all_notitas.push(dataForPush);
 
       // Refresco el estado
       this.setState(
@@ -108,8 +131,17 @@ export default class App extends React.Component {
     Se le pasa una key o id y la cantidad de elementos,
     en este caso, uno. Luego se refresca el estado.
     */
-    this.state.all_notitas.splice(key, 1)
-    this.setState({all_notitas: this.state.all_notitas})  // Refrescar estado
+    // firebase.database().ref('notitas').child('' + key).remove()
+    
+    /*
+    let updates = {};
+    console.log(key);
+    console.log(updates['/notitas/' + key]);
+    updates['/notitas/' + key] = null;
+    firebase.database().ref().update(updates); */
+
+    this.state.all_notitas.splice(key, 1);
+    this.setState({all_notitas: this.state.all_notitas});  // Refrescar estado
   } // deleteNotita
 
 }
@@ -177,4 +209,4 @@ const firebaseConfig = {
   storageBucket: "notitas-app-react-native.appspot.com",
   messagingSenderId: "485786666385"
 };
-const firebaseApp = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
