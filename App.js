@@ -34,14 +34,15 @@ export default class App extends React.Component {
       dataSnapshot.forEach((child) => {
         aux.push({
           date: child.val().date,
-          notita: child.val().notita
+          notita: child.val().notita,
+          id: child.key
         });
       });
       
       // Refrescar estado
       this.setState({all_notitas: aux});
     });
-  }
+  };  // listenForNotitas
 
   render() {
 
@@ -52,7 +53,7 @@ export default class App extends React.Component {
           key={key}
           keyval={key}
           val={val}
-          eventDeleteNotita={()=>this.deleteNotita(key)}>
+          eventDeleteNotita={()=>this.deleteNotita(val.id)}>
         </Notita>
       );
     });
@@ -131,14 +132,8 @@ export default class App extends React.Component {
     Se le pasa una key o id y la cantidad de elementos,
     en este caso, uno. Luego se refresca el estado.
     */
-    // firebase.database().ref('notitas').child('' + key).remove()
-    
-    /*
-    let updates = {};
-    console.log(key);
-    console.log(updates['/notitas/' + key]);
-    updates['/notitas/' + key] = null;
-    firebase.database().ref().update(updates); */
+   
+    firebase.database().ref('notitas').child('' + key).remove()
 
     this.state.all_notitas.splice(key, 1);
     this.setState({all_notitas: this.state.all_notitas});  // Refrescar estado
