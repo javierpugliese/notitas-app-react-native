@@ -13,12 +13,13 @@ import Notita from './componentes/Notita';
 import firebase from 'firebase';
 
 export default class App extends React.Component {
-
-  // Estado de la App
-  state = {
-    all_notitas: [],
-    notita_text: ''
-  }
+  constructor(props) {
+    super(props);
+    this.state = {
+      all_notitas: [],
+      notita_text: ''
+    };
+  };
 
   render() {
 
@@ -73,8 +74,12 @@ export default class App extends React.Component {
     Se hizo esta función para pasarle
     datos al estado y luego renderizar notitas.
     */
+
     if (this.state.notita_text) {
       var d = new Date();
+      let nuevo = this.state.notita_text
+      nuevo = {notita:nuevo, date:d};
+
       this.state.all_notitas.push(
         {
           'notita': this.state.notita_text,
@@ -82,6 +87,9 @@ export default class App extends React.Component {
         }
       ); // Agrego datos al array de notitas
       
+      // Subo notitas a Firebase
+      firebase.database().ref('notitas').push(nuevo);
+
       // Agrego notitas al estado que las contiene
       this.setState(
         {
@@ -160,3 +168,13 @@ const styles = StyleSheet.create({
     borderTopColor: '#ededed',
   }
 });
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC8L7gGSj7l76LPJCaFjF6RNAhHAqI0W80",
+  authDomain: "notitas-app-react-native.firebaseapp.com",
+  databaseURL: "https://notitas-app-react-native.firebaseio.com",
+  projectId: "notitas-app-react-native",
+  storageBucket: "notitas-app-react-native.appspot.com",
+  messagingSenderId: "485786666385"
+};
+const firebaseApp = firebase.initializeApp(firebaseConfig);
