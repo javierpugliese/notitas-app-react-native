@@ -9,7 +9,8 @@
 > - Instalar [NodeJS](https://nodejs.org/es/) en tu pc.
 > - npm install -g expo-cli
 > - npm install i -S firebase
-> - git clone https://github.com/javierpugliese/notitas-app-react-native.git
+> - Descargar el [código fuente de la release](https://github.com/javierpugliese/notitas-app-react-native/releases).
+> - Extraer el comprimido.
 > - cd notitas-app-react-native
 > - npm install
 > - expo start
